@@ -24,11 +24,16 @@ body {
 
 .container-sketch {
   border: 2px solid #0ffff0;
+  
   height: 400px;
   width: 400px;
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
+}
+
+.box:hover {
+  background-color: #232324;
 }
 
 .footer {
