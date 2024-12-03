@@ -15,7 +15,7 @@ function generateTiles(grids = 16) {
   for (let i = 0 ; i < totalBox ; i++) {
     
     let box = document.createElement("div");
-    box.style.cssText = `width: ${boxWidth}px; height: ${boxHeight}px; border: 1px solid #000000; margin: 0;`;
+    box.style.cssText = `width: ${boxWidth}px; height: ${boxHeight}px; margin: 0;`;
     box.classList.add("box");
     sketch.appendChild(box);
     
@@ -48,36 +48,57 @@ function gridInput() {
   return grid;
 }
 
-/* This function checks which color mode is currently active before applying color to a grid. */
-function colorApply(grid) {
+/* This function checks which input mode is currently active before applying color to a grid. */
+function modeApply(grid) {
   
-  if (colorMode === "monochrome") {
+  if (inputMode === "monochrome") {
      monochrome(grid);
      
-  } else if (colorMode === "randomize") {
+  } else if (inputMode === "randomize") {
      randomize(grid);
+     
+  } else if (inputMode === "erase") {
+     grid.style["background-color"] = "";
   }
 }
 
 /* This function changes the current color mode to another mode and changes the button colors. */
-function changeColorMode(mode) {
+function changeInputMode(mode) {
   const buttonOn = "on";
-  const buttonOff = "off";
   
   if (mode === "monochrome" && !buttonMonochrome.classList.contains(buttonOn)) {
     
-    colorMode = "monochrome";
-    
+    inputMode = "monochrome";
     buttonMonochrome.classList.toggle(buttonOn);
-    buttonRandomize.classList.toggle(buttonOn);
+    
+    if (buttonErase.classList.contains(buttonOn)) {
+      buttonErase.classList.toggle(buttonOn);
+    } else if (buttonRandomize.classList.contains(buttonOn)) {
+      buttonRandomize.classList.toggle(buttonOn);
+    }
     
     
   } else if (mode === "randomize" && !buttonRandomize.classList.contains(buttonOn)) {
     
-    colorMode = "randomize";
-    
+    inputMode = "randomize";
     buttonRandomize.classList.toggle(buttonOn);
-    buttonMonochrome.classList.toggle(buttonOn);
+    
+    if (buttonErase.classList.contains(buttonOn)) {
+      buttonErase.classList.toggle(buttonOn);
+    } else if (buttonMonochrome.classList.contains(buttonOn)) {
+      buttonMonochrome.classList.toggle(buttonOn);
+    }
+    
+  } else if (mode === "erase" && !buttonErase.classList.contains(buttonOn)) {
+    
+    inputMode = "erase";
+    buttonErase.classList.toggle(buttonOn);
+    
+    if (buttonRandomize.classList.contains(buttonOn)) {
+      buttonRandomize.classList.toggle(buttonOn);
+    } else if (buttonMonochrome.classList.contains(buttonOn)) {
+      buttonMonochrome.classList.toggle(buttonOn);
+    }
     
   }
 }
@@ -107,6 +128,7 @@ function randomize(grid) {
     
 }
 
+
 /* This function generates random number from 0 to 255 for the RGB function. */
 function generateRandomIntensity() {
   
@@ -117,17 +139,18 @@ function generateRandomIntensity() {
 const sketch = document.querySelector(".container-sketch");
 const buttonMonochrome = document.querySelector(".button-monochrome");
 const buttonRandomize = document.querySelector(".button-randomize");
+const buttonErase = document.querySelector(".button-erase");
 
 /* this event handler generates the initial boxes inside the sketch board after the page loads and sets the monochrome color mode on. */
 window.addEventListener("load", () => {
   
   generateTiles();
-  colorMode = "monochrome";
+  inputMode = "monochrome";
   buttonRandomize.classList.toggle("on");
-  
+  buttonErase.classList.toggle("on");
 });
 
-let colorMode;
+let inputMode;
 
 const options = document.querySelectorAll(".options button");
 
@@ -141,10 +164,13 @@ options.forEach(button => {
       generateTiles(gridInput());
       
     } else if (buttonClass.contains("button-randomize")) {
-      changeColorMode("randomize");
+      changeInputMode("randomize");
       
     } else if (buttonClass.contains("button-monochrome")) {
-      changeColorMode("monochrome");
+      changeInputMode("monochrome");
+      
+    } else if (buttonClass.contains("button-erase")) {
+      changeInputMode("erase");
     }
     
   });
@@ -155,6 +181,6 @@ options.forEach(button => {
 sketch.addEventListener("click", event => {
   
   const grid = event.target;
-  colorApply(grid);
+  modeApply(grid);
   
 });
