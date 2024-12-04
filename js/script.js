@@ -89,16 +89,19 @@ function changeInputMode(mode) {
       buttonMonochrome.classList.toggle(buttonOn);
     }
     
+    
   } else if (mode === "erase" && !buttonErase.classList.contains(buttonOn)) {
     
     inputMode = "erase";
     buttonErase.classList.toggle(buttonOn);
+    
     
     if (buttonRandomize.classList.contains(buttonOn)) {
       buttonRandomize.classList.toggle(buttonOn);
     } else if (buttonMonochrome.classList.contains(buttonOn)) {
       buttonMonochrome.classList.toggle(buttonOn);
     }
+    
     
   }
 }
@@ -125,6 +128,7 @@ function monochrome(grid) {
 function randomize(grid) {
   
     grid.style["background-color"] =  `rgb(${generateRandomIntensity()}, ${generateRandomIntensity()}, ${generateRandomIntensity()})`;
+    grid.style["opacity"] = "";
     
 }
 
@@ -177,10 +181,18 @@ options.forEach(button => {
   
 });
 
+
 /* This event handler captures event that occur within the sketch area and applies a color depending on the currently active color mode.*/
+
+
 sketch.addEventListener("click", event => {
   
   const grid = event.target;
-  modeApply(grid);
+  /* This statement prevents the accidental color application on the grid container. */
+  if (!grid.classList.contains("container-sketch")) {
+    modeApply(grid);
+  }
   
 });
+
+
